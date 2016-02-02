@@ -1,11 +1,38 @@
 use strict;
 use warnings;
 use Test::More;
+use Plack::Builder;
+use HTTP::Request::Common;
+use Plack::Test;
 
 use Plack::App::SourceViewer;
 
-can_ok 'Plack::App::SourceViewer', qw/new/;
+my $app = builder {
+    mount "/source" => Plack::App::SourceViewer->new(root => 'share');
+    mount '/' => sub { [200, [], ['ok']] };
+};
 
-# write more tests
+test_psgi $app, sub {
+    my $cb = shift;
+    my $res = $cb->(GET '/source/NotFound.pm');
+    is $res->code, 404;
+    is $res->content_type, 'text/plain';
+};
+
+test_psgi $app, sub {
+    my $cb = shift;
+    my $res = $cb->(GET '/source/Foo.pm');
+    is $res->code, 200;
+    is $res->content_type, 'text/html';
+    like $res->content, qr!<tr><td id="L1" class="line-count">1</td><td><b>package</b>&nbsp;Foo;<br></td></tr>!;
+};
+
+test_psgi $app, sub {
+    my $cb = shift;
+    my $res = $cb->(GET '/source/hoge.html');
+    is $res->code, 200;
+    is $res->content_type, 'text/html';
+    like $res->content, qr!<tr><td id="L1" class="line-count">1</td><td>&lt;div&gt;hoge&amp;fuga&lt;/div&gt;</td></tr>!;
+};
 
 done_testing;
