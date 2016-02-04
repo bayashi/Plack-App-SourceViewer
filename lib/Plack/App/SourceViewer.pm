@@ -27,6 +27,26 @@ body { font-size: 80%; font-family: "Consolas","Bitstream Vera Sans Mono","Couri
 table { margin: 12px 0 32px 0; border-collapse: collapse; }
 td { white-space: nowrap; }
 .line-count { text-align: right; padding-right: 8px; }
+.alert       { color: #0000ff; }
+.basen       { color: #007f00; }
+.bstring     { color: #c9a7ff; }
+.char        { color: #ff00ff; }
+.comment     { color: #7f7f7f; font-style: italic; }
+.datatype    { color: #0000ff; }
+.decval      { color: #00007f; }
+.error       { color: #ff0000; font-weight: bold; font-style: italic; }
+.float       { color: #00007f; }
+.function    { color: #007f00; }
+.istring     { color: #ff0000; }
+.keyword     { font-weight: bold; }
+//.normal      { color: #0000ff; }
+.operator    { color: #eea000; }
+.others      { color: #b03060; }
+.regionmaker { color: #96b9ff; font-style: italic; }
+.reserved    { color: #9b30ff; font-weight: bold; }
+.string      { color: #ff0000; }
+.variable    { color: #0000ff; font-weight: bold; }
+.warning     { color: #0000ff; font-weight: bold; font-style: italic; }
 _CSS_
 
 our $SCRIPT = <<'_SCRIPT_';
@@ -122,7 +142,7 @@ sub _filter_response {
     my $body_sub = sub { $body .= Plack::Util::encode_html($_[0]) };
     if ( my $lang = $self->ext_lang_map->{$ext} ) {
         $self->{highlighter}{$lang} ||= $self->_highlighter($lang);
-        $body_sub = sub { $body .=  $self->{highlighter}{$lang}->highlightText($_[0]) };
+        $body_sub = sub { chomp $_[0]; $body .=  $self->{highlighter}{$lang}->highlightText($_[0]) };
     }
 
     Plack::Util::foreach($res->[2], $body_sub);
@@ -174,29 +194,28 @@ sub _highlighter {
             "&"  => "&amp;",
             " "  => "&nbsp;",
             "\t" => "&nbsp;&nbsp;",
-            "\n" => "<br>\n",
         },
         format_table => {
-             Alert        => [ "<font color=\"#0000ff\">",       "</font>" ],
-             BaseN        => [ "<font color=\"#007f00\">",       "</font>" ],
-             BString      => [ "<font color=\"#c9a7ff\">",       "</font>" ],
-             Char         => [ "<font color=\"#ff00ff\">",       "</font>" ],
-             Comment      => [ "<font color=\"#7f7f7f\"><i>",    "</i></font>" ],
-             DataType     => [ "<font color=\"#0000ff\">",       "</font>" ],
-             DecVal       => [ "<font color=\"#00007f\">",       "</font>" ],
-             Error        => [ "<font color=\"#ff0000\"><b><i>", "</i></b></font>" ],
-             Float        => [ "<font color=\"#00007f\">",       "</font>" ],
-             Function     => [ "<font color=\"#007f00\">",       "</font>" ],
-             IString      => [ "<font color=\"#ff0000\">",       "" ],
-             Keyword      => [ "<b>",                            "</b>" ],
-             Normal       => [ "",                               "" ],
-             Operator     => [ "<font color=\"#eea000\">",       "</font>" ],
-             Others       => [ "<font color=\"#b03060\">",       "</font>" ],
-             RegionMarker => [ "<font color=\"#96b9ff\"><i>",    "</i></font>" ],
-             Reserved     => [ "<font color=\"#9b30ff\"><b>",    "</b></font>" ],
-             String       => [ "<font color=\"#ff0000\">",       "</font>" ],
-             Variable     => [ "<font color=\"#0000ff\"><b>",    "</b></font>" ],
-             Warning      => [ "<font color=\"#0000ff\"><b><i>", "</b></i></font>" ],
+             Alert        => [ qq|<span class="alert">|,       "</span>" ],
+             BaseN        => [ qq|<span class="basen">|,       "</span>" ],
+             BString      => [ qq|<span class="bstring">|,     "</span>" ],
+             Char         => [ qq|<span class="cahr">|,        "</span>" ],
+             Comment      => [ qq|<span class="comment"><i>|,  "</span>" ],
+             DataType     => [ qq|<span class="datatype">|,    "</span>" ],
+             DecVal       => [ qq|<span class="decval">|,      "</span>" ],
+             Error        => [ qq|<span class="error">|,       "</span>" ],
+             Float        => [ qq|<span class="float">|,       "</span>" ],
+             Function     => [ qq|<span class="function">|,    "</span>" ],
+             IString      => [ qq|<span class="istring">|,     "</span>" ],
+             Keyword      => [ qq|<span class="keyword">|,     "</span>" ],
+             Normal       => [ "",                             ""        ],
+             Operator     => [ qq|<span class="operator">|,    "</span>" ],
+             Others       => [ qq|<span class="others">|,      "</span>" ],
+             RegionMarker => [ qq|<span class="regionmaker">|, "</span>" ],
+             Reserved     => [ qq|<span class="reserved">|,    "</span>" ],
+             String       => [ qq|<span class="string">|,       "</span>"],
+             Variable     => [ qq|<span class="variable">|,    "</span>" ],
+             Warning      => [ qq|<span class="warning">|,     "</span>" ],
         },
     );
 }
