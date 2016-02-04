@@ -24,7 +24,7 @@ test_psgi $app, sub {
     my $res = $cb->(GET '/source/Foo.pm');
     is $res->code, 200;
     is $res->content_type, 'text/html';
-    like $res->content, qr!<tr><td id="L1" class="line-count">1</td><td><b>package</b>&nbsp;Foo;<br></td></tr>!;
+    like $res->content, qr!<tr id="L1"><td class="line-count">1</td><td><b>package</b>&nbsp;Foo;<br></td></tr>!;
 };
 
 test_psgi $app, sub {
@@ -32,7 +32,7 @@ test_psgi $app, sub {
     my $res = $cb->(GET '/source/hoge.html');
     is $res->code, 200;
     is $res->content_type, 'text/html';
-    like $res->content, qr!<tr><td id="L1" class="line-count">1</td><td>&lt;div&gt;hoge&amp;fuga&lt;/div&gt;</td></tr>!;
+    like $res->content, qr!<tr id="L1"><td class="line-count">1</td><td>&lt;div&gt;hoge&amp;fuga&lt;/div&gt;</td></tr>!;
 };
 
 done_testing;

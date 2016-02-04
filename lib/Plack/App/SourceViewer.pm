@@ -22,12 +22,53 @@ my %EXT_LANG_MAP = (
     '.t'    => 'Perl',
 );
 
-my $DEFAULT_CSS = <<'_CSS_';
+our $DEFAULT_CSS = <<'_CSS_';
 body { font-size: 80%; font-family: "Consolas","Bitstream Vera Sans Mono","Courier New",Courier,monospace; }
-table { margin: 12px 0 32px 0; }
+table { margin: 12px 0 32px 0; border-collapse: collapse; }
 td { white-space: nowrap; }
 .line-count { text-align: right; padding-right: 8px; }
 _CSS_
+
+our $SCRIPT = <<'_SCRIPT_';
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script>
+$(function(){
+    if ( location.hash.match(/\#L(\d+)$/) ) {
+        var line = RegExp.$1;
+        highlighter(line);
+        window.scrollTo(0, $(window).scrollTop() - 100);
+    }
+    if ( location.hash.match(/\#L(\d+)\-L(\d+)$/) ) {
+        var start = parseInt(RegExp.$1);
+        var end   = parseInt(RegExp.$2);
+        if (start > end) {
+            var tmp = start; start = end; end = tmp;
+        }
+        for (var i = start; i <= end; i++) {
+            highlighter(i);
+        }
+        window.location.hash = 'L' + start;
+        window.scrollTo(0, $(window).scrollTop() - 100);
+        window.location.hash = 'L' + start + '-L' + end;
+    }
+    if ( location.hash.match(/\#L(\d+,[\d\,]+)$/) ) {
+        var ft   = RegExp.$1;
+        var list = ft.split(',');
+        for (var i in list) {
+            highlighter(list[i]);
+        }
+        window.location.hash = 'L' + list.shift();
+        window.scrollTo(0, $(window).scrollTop() - 100);
+        window.location.hash = 'L' + ft;
+    }
+    function highlighter(line) {
+        if ($('#L'+line).length) {
+            $('#L'+line).css('background-color', '#ffffcc');
+        }
+    }
+});
+</script>
+_SCRIPT_
 
 sub prepare_app {
     my $self = shift;
@@ -101,13 +142,13 @@ _HTML_
     for my $line ( split /\n/, $body ) {
         $length += $self->_body(
             $res->[2],
-            qq|<tr><td id="L$line_count" class="line-count">$line_count</td><td>$line</td></tr>\n|
+            qq|<tr id="L$line_count"><td class="line-count">$line_count</td><td>$line</td></tr>\n|
         );
         $line_count++;
     }
     $length += $self->_body(
         $res->[2],
-        '</table></body></html>'
+        "</table>$SCRIPT</body></html>",
     );
 
     my $h = Plack::Util::headers($res->[1]);
@@ -149,7 +190,7 @@ sub _highlighter {
              IString      => [ "<font color=\"#ff0000\">",       "" ],
              Keyword      => [ "<b>",                            "</b>" ],
              Normal       => [ "",                               "" ],
-             Operator     => [ "<font color=\"#ffa500\">",       "</font>" ],
+             Operator     => [ "<font color=\"#eea000\">",       "</font>" ],
              Others       => [ "<font color=\"#b03060\">",       "</font>" ],
              RegionMarker => [ "<font color=\"#96b9ff\"><i>",    "</i></font>" ],
              Reserved     => [ "<font color=\"#9b30ff\"><b>",    "</b></font>" ],
