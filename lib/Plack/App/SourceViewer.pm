@@ -153,6 +153,7 @@ sub _filter_response {
 <!DOCTYPE HTML><html>
 <head>
 <title>@{[Plack::Util::encode_html($path)]}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1;">
 <style>@{[$self->css]}</style>
 </head>
 <body>
