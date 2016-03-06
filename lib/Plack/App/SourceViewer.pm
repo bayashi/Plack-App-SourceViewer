@@ -13,7 +13,7 @@ use Plack::Util::Accessor qw/
     css
 /;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 my %EXT_LANG_MAP = (
     '.pm'   => 'Perl',
@@ -260,7 +260,7 @@ Plack::App::SourceViewer provides the viewer of source code as HTML.
 
 =begin html
 
-<a href="http://travis-ci.org/bayashi/Plack-App-SourceViewer"><img src="https://secure.travis-ci.org/bayashi/Plack-App-SourceViewer.png?_t=1454581115"/></a> <a href="https://coveralls.io/r/bayashi/Plack-App-SourceViewer"><img src="https://coveralls.io/repos/bayashi/Plack-App-SourceViewer/badge.png?_t=1454581115&branch=master"/></a>
+<a href="http://travis-ci.org/bayashi/Plack-App-SourceViewer"><img src="https://secure.travis-ci.org/bayashi/Plack-App-SourceViewer.png?_t=1457227925"/></a> <a href="https://coveralls.io/r/bayashi/Plack-App-SourceViewer"><img src="https://coveralls.io/repos/bayashi/Plack-App-SourceViewer/badge.png?_t=1457227925&branch=master"/></a>
 
 =end html
 
